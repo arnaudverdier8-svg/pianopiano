@@ -1,0 +1,82 @@
+{
+  "singleNotes": {
+    "cases": 75,
+    "advanced": 74,
+    "rate": 0.9866666666666667,
+    "latencyMedianMs": 97,
+    "latencyP90Ms": 143,
+    "misses": [
+      "B2 mf"
+    ]
+  },
+  "chords": {
+    "cases": 24,
+    "advanced": 15,
+    "advancedAllTonesClearlyHeard": 12,
+    "latencyMedianMs": 143,
+    "latencyP90Ms": 190,
+    "notAdvanced": [
+      "A♭3+C4+E♭4+A♭4",
+      "C♯4+C♯5",
+      "C♯2+C♯3",
+      "C3+E3+G3",
+      "C4+E4+G4+C5",
+      "F♯3+C♯4+F♯4+B♭4",
+      "E♭4+B♭4+E♭5",
+      "C♯3+A♭3+F4",
+      "E♭2+B♭3+E♭4"
+    ]
+  },
+  "partialChords": {
+    "cases": 67,
+    "falselyAccepted": 4,
+    "rate": 0.05970149253731343,
+    "falseCases": [
+      "C♯3 accepted for C♯3+C♯4",
+      "A♭4 accepted for A♭4+A♭5",
+      "F2+F3+C4 accepted for F2+F3+C4+F4",
+      "E♭4+B♭4 accepted for E♭4+B♭4+E♭5"
+    ]
+  },
+  "wrongNotes": {
+    "cases": 24,
+    "falselyAccepted": 0
+  },
+  "octaveErrors": {
+    "cases": 22,
+    "falselyAccepted": 0,
+    "falseCases": []
+  },
+  "repeatedNotes": {
+    "cases": 4,
+    "bothStrikesAdvance": 4,
+    "sustainFalselyAdvancesSecond": 0
+  },
+  "sustainPlusNew": {
+    "cases": 5,
+    "advanced": 5
+  },
+  "noise": {
+    "silence10s": 0,
+    "pinkMinus45dB10s": 1,
+    "whiteMinus50dB10s": 0
+  },
+  "notesInNoise": {
+    "cases": 17,
+    "advanced": 17,
+    "noise": "pink, −45 dBFS RMS (notes peak at −12 dBFS)"
+  },
+  "generatedAt": "2026-09-25T00:41:09.957Z",
+  "detector": "nnls-harmonic-v1",
+  "matcher": {
+    "acceptConfidence": 0.55,
+    "maskedConfidence": 0.3,
+    "uncertainConfidence": 0.3,
+    "rollWindow": 0.4,
+    "earlyTolerance": 0.45,
+    "octavePolicy": "verify",
+    "bassOctaveBelow": 0,
+    "blockOnExtraNotes": 3
+  },
+  "source": "University of Iowa Musical Instrument Samples, Steinway B (mf and pp), mono 44.1 kHz. Independent of the Salamander samples used to learn the detector templates."
+}
