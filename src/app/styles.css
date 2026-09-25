@@ -131,6 +131,10 @@ select {
   white-space: nowrap;
 }
 
+.library-pick select {
+  max-width: 260px;
+}
+
 .top-actions {
   display: flex;
   align-items: center;

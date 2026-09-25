@@ -1,6 +1,6 @@
 # Recognition benchmark
 
-Generated 2026-09-25T00:44:39.452Z by `npm run bench:detector` (`src/tests/detector/benchmark.test.ts`).
+Generated 2026-09-25T01:18:28.110Z by `npm run bench:detector` (`src/tests/detector/benchmark.test.ts`).
 
 Detector `nnls-harmonic-v1` with the app's default matcher settings. Every case asks the question the app asks: *would this gate advance within 1 s of the attack?* Audio passes through the real path: 128-sample quanta at 44.1 kHz, explicit resampling to 22.05 kHz, the detector, then the GateMatcher.
 

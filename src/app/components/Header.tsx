@@ -45,6 +45,23 @@ export function Header({ onSetup, onSettings, onShortcuts, onImport, onFullscree
           <h1 className="muted">{c.songStatus.kind === 'loading' ? 'Loading…' : 'No piece loaded'}</h1>
         )}
       </div>
+      <label className="library-pick">
+        <span className="sr-only">Choose a piece</span>
+        <select
+          value={c.currentLibraryId ?? ''}
+          onChange={(e) => e.target.value && void c.loadLibrarySong(e.target.value)}
+          aria-label="Choose a piece"
+          data-testid="library"
+        >
+          {c.currentLibraryId === null && <option value="">Imported file</option>}
+          <option value="clair-de-lune">Debussy: Clair de lune</option>
+          {c.library.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.composer.replace(/^.*\. /, '')}: {e.title}
+            </option>
+          ))}
+        </select>
+      </label>
       <div className="top-actions">
         <button className={`mic-pill ${mic.tone}`} onClick={onToggleMic} title={mic.title} aria-label={`Microphone: ${mic.label}. ${mic.title} Press to ${c.mic.kind === 'on' ? 'turn off' : 'turn on'}.`} data-testid="mic-pill">
           <span className="dot" aria-hidden="true" />

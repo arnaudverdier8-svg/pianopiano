@@ -1,6 +1,6 @@
 # MOONLIGHT
 
-Piano practice that listens. Notes fall towards a line. In Learn mode they stop there and wait until the microphone hears you play them on your own acoustic piano. It ships with Debussy's *Clair de lune* (Mutopia Project #1778, public domain).
+Piano practice that listens. Notes fall towards a line. In Learn mode they stop there and wait until the microphone hears you play them on your own acoustic piano. It ships with Debussy's *Clair de lune* (Mutopia Project #1778, public domain) and a library of 49 more piano pieces from the Mutopia Project (Beethoven, Chopin, Bach, Satie, Joplin…), chosen from the piece picker in the header. Library pieces have no validated hand mapping, so practise them by track or with both hands.
 
 Everything runs locally in the browser. There are no accounts, servers or uploads, and nothing is recorded. The microphone is analysed in a Web Worker on your computer and released when you turn it off or close the tab.
 

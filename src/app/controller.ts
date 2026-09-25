@@ -11,6 +11,19 @@ import { PlaybackScheduler } from '../playback/scheduler';
 import { addSession, loadProgress, savePosition } from '../storage/progress';
 import { DEFAULT_SETTINGS, loadSettings, saveSettings, type AppSettings, type PartChoice } from '../storage/settings';
 
+/** One piece of the bundled practice library (public/songs/library.json). */
+export interface LibraryEntry {
+  id: string;
+  title: string;
+  composer: string;
+  file: string;
+  sha256: string;
+  source: string;
+  catalogUrl: string;
+  fileUrl: string;
+  license: string;
+}
+
 export type SongStatus =
   | { kind: 'loading' }
   | { kind: 'ready' }
@@ -64,6 +77,9 @@ export class PracticeController {
   song: Song | null = null;
   songStatus: SongStatus = { kind: 'loading' };
   isBundled = false;
+  /** Pieces available in the library picker (Clair de lune is listed first, separately). */
+  library: LibraryEntry[] = [];
+  currentLibraryId: string | null = 'clair-de-lune';
   mic: MicState = { kind: 'off' };
   levels: Levels = { rmsDb: -100, peak: 0, clippedRecently: false, tooQuiet: false, noiseDb: -100, residual: 0 };
   sounding: SoundingPitch[] = [];
@@ -141,6 +157,7 @@ export class PracticeController {
   start(): void {
     if (this.timer === null) this.timer = window.setInterval(() => this.loop(), 20);
     void this.loadBundled();
+    void this.loadLibraryIndex();
     window.addEventListener('pagehide', this.onLeave);
     document.addEventListener('visibilitychange', this.onVisibility);
   }
@@ -209,11 +226,51 @@ export class PracticeController {
     try {
       const song = sidecar ? parseMidi(bytes, { sidecar }) : parseMidi(bytes, { id: 'clair-de-lune', title: 'Clair de lune', composer: 'Claude Debussy' });
       this.isBundled = true;
+      this.currentLibraryId = 'clair-de-lune';
       this.setSong(song, true);
     } catch (e) {
       this.songStatus = { kind: 'error', detail: e instanceof Error ? e.message : String(e) };
       this.notify(true);
     }
+  }
+
+  private async loadLibraryIndex(): Promise<void> {
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}songs/library.json`);
+      if (res.ok) this.library = (await res.json()) as LibraryEntry[];
+    } catch {
+      this.library = [];
+    }
+    this.notify(true);
+  }
+
+  /** Loads a library piece. The file must match its recorded SHA-256; tracks are shown as-is (no hand mapping). */
+  async loadLibrarySong(id: string): Promise<void> {
+    if (id === 'clair-de-lune') {
+      this.currentLibraryId = id;
+      return this.loadBundled();
+    }
+    const entry = this.library.find((e) => e.id === id);
+    if (!entry) return;
+    const token = ++this.loadToken;
+    this.pause();
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}songs/${entry.file}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const bytes = await res.arrayBuffer();
+      if ((await sha256Hex(bytes)) !== entry.sha256) throw new Error('the file does not match its recorded checksum');
+      if (token !== this.loadToken) return;
+      const song = parseMidi(bytes, { id: entry.id, title: entry.title, composer: entry.composer });
+      song.provenance = { source: entry.source, catalogUrl: entry.catalogUrl, fileUrl: entry.fileUrl, license: entry.license, sha256: entry.sha256 };
+      this.isBundled = false;
+      this.currentLibraryId = id;
+      this.setSong(song, false);
+      this.notice = null;
+    } catch (e) {
+      if (token !== this.loadToken) return;
+      this.notice = `Could not load “${entry.title}”: ${e instanceof Error ? e.message : String(e)}`;
+    }
+    this.notify(true);
   }
 
   async importFile(file: File): Promise<void> {
@@ -227,6 +284,7 @@ export class PracticeController {
       const bytes = await file.arrayBuffer();
       const song = parseMidi(bytes, { id: `import:${file.name}:${file.size}`, title: file.name.replace(/\.(mid|midi)$/i, ''), composer: 'Imported MIDI' });
       this.isBundled = false;
+      this.currentLibraryId = null;
       this.setSong(song, false);
       this.notice = `Loaded “${file.name}”: ${song.notes.length} notes, ${song.tracks.length} track(s). Hand mapping is not available for imported files; choose tracks instead.`;
     } catch (e) {

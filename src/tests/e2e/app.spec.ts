@@ -141,3 +141,14 @@ test('keyboard shortcuts list and dialogs are reachable', async ({ page }) => {
   await expect(page.getByTestId('diag-state')).toHaveText('ready');
   expect(errors).toEqual([]);
 });
+
+test('library: choose another piece', async ({ page }) => {
+  const errors = watchConsole(page);
+  await freshStart(page);
+  await page.getByTestId('library').selectOption({ label: 'Beethoven: Für Elise' });
+  await expect(page.getByTestId('piece-title')).toContainText('Für Elise');
+  await expect(page.getByTestId('part')).toHaveValue('both');
+  await page.getByTestId('library').selectOption('clair-de-lune');
+  await expect(page.getByTestId('piece-title')).toContainText('Clair de lune');
+  expect(errors).toEqual([]);
+});
