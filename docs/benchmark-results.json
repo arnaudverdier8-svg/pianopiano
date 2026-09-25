@@ -66,7 +66,7 @@
     "advanced": 17,
     "noise": "pink, −45 dBFS RMS (notes peak at −12 dBFS)"
   },
-  "generatedAt": "2026-09-25T00:41:09.957Z",
+  "generatedAt": "2026-09-25T00:44:39.452Z",
   "detector": "nnls-harmonic-v1",
   "matcher": {
     "acceptConfidence": 0.55,
